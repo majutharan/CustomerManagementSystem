@@ -1,0 +1,195 @@
+<div class="col-lg-14">
+  <div class="card">
+    <div class="card-block">
+      <button class="btn btn-success pull-right" (click)="openAddNewWindow()"><i class="icon-plus icons font-1xl"></i>
+        Add New Customer
+      </button>
+      <h4>Customer</h4>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{backdrop: 'static'}"
+     tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left" [hidden]="customerAdd"><strong>Add New Customer</strong>
+        </h4>
+        <h4 class="modal-title pull-left" [hidden]="customerEdit"><strong>Edit Customer</strong>
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="closeBtn()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- //form-->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 pull-right">
+            <form name="form" [formGroup]="form" novalidate>
+              <div class="card-block">
+                <div *ngFor="let alert of alerts">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
+                </div>
+
+                <div class="form-group">
+                  <label for="firstName">First Name <span class="red">*</span></label>
+                  <input type="text" id="firstName" onkeypress="return (event.charCode >= 65 || event.charCode >= 97)"
+                         class="form-control" placeholder="First Name" name="firstName"
+                         [(ngModel)]="model.firstName" formControlName="firstName">
+                  <!--<div class="alert" *ngIf="!form.controls['firstName'].valid && form.controls['firstName'].touched">sun</div>-->
+                  <div *ngIf="form.controls['firstName'].errors && !form.controls['firstName'].pristine" class="red">
+                    <div [hidden]="!form.controls['firstName'].errors.required">First Name is required.</div>
+                    <div [hidden]="!form.controls['firstName'].errors.pattern">First Name is invalid.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" id="lastName" onkeypress="return (event.charCode >= 65 || event.charCode >= 97)"
+                         class="form-control" placeholder="Last Name" name="lastName"
+                         [(ngModel)]="model.lastName" formControlName="lastName">
+                  <div *ngIf="form.controls['lastName'].errors && !form.controls['lastName'].pristine" class="red">
+                    <div [hidden]="!form.controls['lastName'].errors.required">Last Name is required.</div>
+                    <div [hidden]="!form.controls['lastName'].errors.pattern">Last Name is invalid.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="text" id="email" class="form-control" placeholder="Email" name="email"
+                         [(ngModel)]="model.email" formControlName="email">
+                  <div
+                    *ngIf="form.controls['email'].errors && !form.controls['email'].pristine"
+                    class="red">
+                    <!--<div [hidden]="!form.controls['email'].errors.email">email Name is required.</div>-->
+                    <div [hidden]="!form.controls['email'].errors.pattern">Email is invalid.</div>
+                    <!--<div
+                      *ngIf="form.controls['email'].emailValidator"
+                      class="red">
+                    <div [hidden]="form.controls['email'].phonenoValidator">Email is already exists.</div>
+                      <div [hidden]="testValidation">Email is already exists.</div></div>-->
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="phoneNumber">Phone Number <span class="red">*</span></label>
+                  <input type="text" id="phoneNumber" (ng-focus)="checkPhoneNumber()" pattern="[0-9]{9}"
+                         class="form-control" placeholder="Phone Number" name="phoneNumber"
+                         [(ngModel)]="model.phoneNumber" formControlName="phoneNumber">
+                  <div *ngIf="form.controls['phoneNumber'].errors && !form.controls['phoneNumber'].pristine"
+                       class="red">
+                    <div [hidden]="!form.controls['phoneNumber'].errors.required">Phone Number is required.</div>
+                    <div [hidden]="!form.controls['phoneNumber'].errors.pattern">Phone Number is invalid.</div>
+                  </div>
+                </div>
+                <br/>
+                <button [hidden]="isCreateUser" type="submit" class="btn btn-block btn-success"
+                        (click)="registerCustomer()">Add New Customer
+                </button>
+              </div>
+            </form>
+            <button [hidden]="isUpdateUser" class="btn btn-block btn-success" (click)="update()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="col-lg-6.8 pull-right">
+            <input type="text" [(ngModel)]="searchText "
+                   class="form-control search pull-left" placeholder="Search..."/>
+          </div>
+        </div>
+      </div>
+      <div class="card-block">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Telephone Number</th>
+            <th>Created By</th>
+            <th>Created Date</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            *ngFor="let customer of allCustomer | customersearch:searchText| paginate: { itemsPerPage: 50, currentPage: page}; let i=index">
+            <!--pagination-->
+            <td>{{customer.cid}}</td>
+            <td>{{customer.firstName}}</td>
+            <td>{{customer.lastName}}</td>
+            <td>{{customer.email}}</td>
+            <td>{{customer.phoneNumber}}</td>
+            <td>{{customer.createdBy}}</td>
+            <td>{{customer.createdDate}}</td>
+            <td>
+
+              <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" (click)="openCustomerDrop(customer.cid)"
+                        class="btn btn-primary dropdown-toggle">
+                  Action <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li role="menuitem" [hidden]="isCustomerDelete"><a class="dropdown-item" (click)="dangerModal.show()"><i
+                    class="icon-trash icons"
+                    style="color: red"></i>Delete</a>
+                  </li>
+                  <li role="menuitem" [hidden]="isCustomerShow"><a class="dropdown-item"
+                                                                   (click)="updateCustomer(customer)"><i
+                    class="icon-action-undo icons " style="color: green"></i>Edit</a>
+                  </li>
+                  <li role="menuitem"><a class="dropdown-item" [routerLink]="['view', customer.cid]"><i
+                    class="icon-size-fullscreen icons"
+                    style="color: blue"></i>View</a></li>
+                </ul>
+              </div>
+
+            </td>
+            <!--delete modal-->
+            <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-danger" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title"><i class="fa fa-trash fa-lg mt-1"></i> Delete</h4>
+                    <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <h5 style="color: black">Do you want delete?</h5>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">No</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteCustomer(customer.cid)">Yes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--delete modal end-->
+          </tbody>
+        </table>
+        <!--pagination event-->
+        <div class="has-text-centered">
+          <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        </div>
+        <!--pagination event end-->
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,38 @@
+<div class="modal-body">
+  <div class="row">
+    <div class="col-sm-8 pull-right" id="view-container">
+      <form name="form" (ngSubmit)="f.form.valid && register(); f.form.reset()" #f="ngForm" novalidate
+            style="background-color: white">
+        <div class="card-block">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" [disabled]="disabled"  class="form-control" placeholder="First Name"
+                   name="firstName"
+                   [(ngModel)]="model.firstName" >
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" [disabled]="disabled" class="form-control" placeholder="Last Name" name="lastName"
+                   [(ngModel)]="model.lastName">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" [disabled]="disabled" class="form-control" placeholder="Email" name="email"
+                   [(ngModel)]="model.email"></div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" [disabled]="disabled" class="form-control" placeholder="Password" name="password"
+                   [(ngModel)]="model.password">
+          </div>
+          <br/>
+        </div>
+
+      </form>
+      <br>
+      <div class="form-inline pull-right classPossition">
+        <button  type="button" style="padding-left: 5%" class="btn btn-primary" (click)="backLoc()"><i class="icon-arrow-left-circle"></i>&nbsp; Back
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+.myclass {
+  /*background-color: #00aced;*/
+}
+
+.red {
+  color: red;
+  font-size: small;
+}
+
+.search {
+  border-radius: 25px;
+  width: 600px;
+  border: 1px solid #73AD21;
+}
+.classPossition {
+  position: fixed;
+}
+
